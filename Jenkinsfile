@@ -1,34 +1,45 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON = 'python3'
+    }
+
     stages {
-        stage('Clone') {
+        stage('Install dependencies') {
             steps {
-                echo 'Cloning repository...'
-                checkout scm
+                dir('python-demo') {
+                    sh '${PYTHON} -m pip install --upgrade pip'
+                    sh '${PYTHON} -m pip install -r requirements.txt'
+                }
             }
         }
 
-        stage('Build') {
+        stage('Run App') {
             steps {
-                echo 'Building the application...'
-                // Put your actual build commands here, for example:
-                // sh 'npm install' or sh './gradlew build'
+                dir('python-demo') {
+                    echo 'Running the Python app...'
+                    sh '${PYTHON} main.py < /dev/null' // avoid interactive prompt blocking
+                }
             }
         }
 
-        stage('Test') {
+        stage('Run Tests') {
             steps {
-                echo 'Running tests...'
-                // Put your test commands here, like:
-                // sh 'npm test'
+                dir('python-demo') {
+                    echo 'Running unit tests...'
+                    sh 'PYTHONPATH=. pytest tests'
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Package') {
             steps {
-                echo 'Deploying the app...'
-                // Optional: Add deployment logic
+                dir('python-demo') {
+                    echo 'Packaging the app...'
+                    sh 'tar -czf app.tar.gz *.py requirements.txt tests/'
+                    archiveArtifacts artifacts: 'python-demo/app.tar.gz', fingerprint: true
+                }
             }
         }
     }

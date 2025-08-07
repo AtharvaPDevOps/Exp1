@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        PYTHON = 'python3'
+        PATH = "${HOME}/.local/bin:${PATH}"
     }
 
     stages {
         stage('Install dependencies') {
             steps {
                 dir('python-demo') {
-                    sh '${PYTHON} -m pip install --upgrade pip'
-                    sh '${PYTHON} -m pip install -r requirements.txt'
+                    sh 'python3 -m pip install --upgrade pip'
+                    sh 'python3 -m pip install -r requirements.txt'
                 }
             }
         }
@@ -18,8 +18,8 @@ pipeline {
         stage('Run App') {
             steps {
                 dir('python-demo') {
-                    echo 'Running the Python app...'
-                    sh '${PYTHON} main.py < /dev/null' // avoid interactive prompt blocking
+                    echo "Running the Python app..."
+                    sh 'python3 main.py'
                 }
             }
         }
@@ -28,7 +28,8 @@ pipeline {
             steps {
                 dir('python-demo') {
                     echo 'Running unit tests...'
-                    sh 'PYTHONPATH=. pytest tests'
+                    // This ensures pytest runs correctly
+                    sh '${HOME}/.local/bin/pytest tests'
                 }
             }
         }
@@ -36,9 +37,9 @@ pipeline {
         stage('Package') {
             steps {
                 dir('python-demo') {
-                    echo 'Packaging the app...'
-                    sh 'tar -czf app.tar.gz *.py requirements.txt tests/'
-                    archiveArtifacts artifacts: 'python-demo/app.tar.gz', fingerprint: true
+                    echo 'Simulating packaging step...'
+                    sh 'tar -czf temperature_converter.tar.gz *.py'
+                    echo 'Packaging complete.'
                 }
             }
         }

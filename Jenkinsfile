@@ -6,7 +6,7 @@ pipeline {
     }
 
     stages {
-        stage('Install dependencies') {
+        stage('Clone') {
             steps {
                 dir('python-demo') {
                     sh 'python3 -m pip install --upgrade pip'
@@ -15,7 +15,7 @@ pipeline {
             }
         }
 
-        stage('Run App') {
+        stage('Build') {
             steps {
                 dir('python-demo') {
                     echo "Running the Python app..."
@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Deploy') {
             steps {
                 dir('python-demo') {
                     echo 'Running unit tests...'
@@ -34,7 +34,7 @@ pipeline {
             }
         }
 
-        stage('Package') {
+        stage('Test') {
             steps {
                 dir('python-demo') {
                     echo 'Simulating packaging step...'

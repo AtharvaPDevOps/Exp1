@@ -5,26 +5,12 @@ from temperature import (
     kelvin_to_celsius
 )
 
-def main():
-    print("Temperature Converter")
-    print("1. Celsius to Fahrenheit")
-    print("2. Fahrenheit to Celsius")
-    print("3. Celsius to Kelvin")
-    print("4. Kelvin to Celsius")
-    choice = input("Choose an option: ")
-    temp = float(input("Enter the temperature: "))
+def run_all():
+    print("Celsius to Fahrenheit (25°C):", celsius_to_fahrenheit(25))
+    print("Fahrenheit to Celsius (77°F):", fahrenheit_to_celsius(77))
+    print("Celsius to Kelvin (0°C):", celsius_to_kelvin(0))
+    print("Kelvin to Celsius (300K):", kelvin_to_celsius(300))
 
-    if choice == '1':
-        print(f"{temp}°C = {celsius_to_fahrenheit(temp):.2f}°F")
-    elif choice == '2':
-        print(f"{temp}°F = {fahrenheit_to_celsius(temp):.2f}°C")
-    elif choice == '3':
-        print(f"{temp}°C = {celsius_to_kelvin(temp):.2f}K")
-    elif choice == '4':
-        print(f"{temp}K = {kelvin_to_celsius(temp):.2f}°C")
-    else:
-        print("Invalid option.")
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    run_all()
 

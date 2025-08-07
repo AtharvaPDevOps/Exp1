@@ -2,11 +2,19 @@ pipeline {
     agent any
 
     environment {
+        PYTHONPATH = '.'
         PATH = "${HOME}/.local/bin:${PATH}"
     }
 
     stages {
+
         stage('Clone') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
             steps {
                 dir('python-demo') {
                     sh 'python3 -m pip install --upgrade pip'
@@ -15,21 +23,11 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                dir('python-demo') {
-                    echo "Running the Python app..."
-                    sh 'python3 main.py'
-                }
-            }
-        }
-
         stage('Deploy') {
             steps {
                 dir('python-demo') {
-                    echo 'Running unit tests...'
-                    // This ensures pytest runs correctly
-                    sh '${HOME}/.local/bin/pytest tests'
+                    echo 'Running the Python app...'
+                    sh 'python3 main.py'
                 }
             }
         }
@@ -37,11 +35,19 @@ pipeline {
         stage('Test') {
             steps {
                 dir('python-demo') {
-                    echo 'Simulating packaging step...'
-                    sh 'tar -czf temperature_converter.tar.gz *.py'
-                    echo 'Packaging complete.'
+                    echo 'Running unit tests...'
+                    sh 'pytest tests'
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
